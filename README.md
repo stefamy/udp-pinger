@@ -25,5 +25,6 @@ This client ping program sends a simple ping message to a server, receiving a co
    - When complete, return to the server command line window and exit by typing **ctrl+c** and hitting **return**  
      
         
-             
-   <img alt="ping terminal window screenshot" src="https://github.com/stefamy/udp-pinger/blob/master/sample-output.png" width="400" style="display: block; margin-top: 10px;">
+*Sample Output:*  
+   
+<img alt="ping terminal window screenshot" src="https://github.com/stefamy/udp-pinger/blob/master/sample-output.png" width="400">
