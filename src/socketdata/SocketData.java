@@ -29,13 +29,7 @@ public class SocketData {
    */
   public SocketData(int port, InetAddress address) {
     this.address = address;
-    if (this.portInRange(port)) {
-      this.port = port;
-    } else {
-      System.out.println(String.format("An out of range port number was passed. Defaulting to port "
-          + "%d.", DEFAULT_PORT_NUMBER));
-      this.port = DEFAULT_PORT_NUMBER;
-    }
+    this.port = this.validatePort(port);
   }
 
   /**
@@ -54,19 +48,8 @@ public class SocketData {
    * @param portInput, port number to set this SocketData's port number to, as a String.
    */
   public void setPort(String portInput) {
-    try {
-      int portInt = Integer.valueOf(portInput);
-      if (this.portInRange(portInt)) {
-        this.port = portInt;
-      } else {
-        System.out
-            .println(String.format("An out of range port number was passed. Defaulting to port "
-                + "%d.", DEFAULT_PORT_NUMBER));
-      }
-    } catch (NumberFormatException e) {
-      System.out.println(String.format("An invalid port was passed. Defaulting to port %d.",
-          DEFAULT_PORT_NUMBER));
-    }
+    int validPort = this.validatePort(portInput);
+    this.port = validPort;
   }
 
   /**
@@ -90,6 +73,46 @@ public class SocketData {
     } catch (UnknownHostException e) {
       System.out.println("An unknown host was passed. Defaulting to localhost address.");
     }
+  }
+
+  /**
+   * Checks if a passed port is in valid range. If so, returns it.
+   * If not, prints error appropriate message and returns default port number.
+   *
+   * @param port - Port number to check for validity, as an int.
+   * @return valid port number, as an int.
+   */
+  private int validatePort(int port) {
+    if (this.portInRange(port)) {
+      return port;
+    } else {
+      System.out.println(String.format("An out of range port number was passed."
+          + "Defaulting to port %d.", DEFAULT_PORT_NUMBER));
+      return DEFAULT_PORT_NUMBER;
+    }
+  }
+
+  /**
+   * Checks if a passed port can be converted to an int and if is in valid range. If so, returns it.
+   * If not, prints error appropriate message and returns default port number.
+   *
+   * @param port - Port number to check for validity, as a String.
+   * @return valid port number, as an int.
+   */
+  private int validatePort(String port) {
+    try {
+      int portInt = Integer.valueOf(port);
+      if (this.portInRange(portInt)) {
+        return portInt;
+      } else {
+        System.out.println(String.format("An out of range port number was passed."
+            + "Defaulting to port %d.", DEFAULT_PORT_NUMBER));
+      }
+    } catch(NumberFormatException e) {
+      System.out.println(String.format("An invalid port was passed. Defaulting to port %d.",
+          DEFAULT_PORT_NUMBER));
+    }
+    return DEFAULT_PORT_NUMBER;
   }
 
   /**

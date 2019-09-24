@@ -1,72 +1,93 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import socketdata.SocketData;
 
 /**
  * UDP UDPClient implementation with associate methods to send and receive data.
-    */
+ */
 public class UDPClient {
 
+  private DatagramSocket socket;
+
   /**
-   * In this programming assignment, you will write a client ping program in Python.
-   * Your client will send a simple ping message to a server, receive a corresponding pong message
-   * back from the server, and determine the delay between when the client sent the ping message and
-   * received the pong message. This delay is called the Round Trip Time (RTT). The functionality
-   * provided by the client and server is similar to the functionality provided by standard ping
-   * program available in modern operating systems. However, standard ping programs use the
-   * Internet Control Message Protocol (ICMP) (which we will study in Chapter 5). Here we will
-   * create a nonstandard (but simple!) UDP-based ping program.
-   *
-   * Your ping program is to send 10 ping messages to the target server over UDP.
-   * For each message, your client is to determine and print the RTT when the corresponding pong
-   * message is returned. Because UDP is an unreliable protocol, a packet sent by the client or
-   * server may be lost. For this reason, the client cannot wait indefinitely for a reply to a
-   * ping message. You should have the client wait up to one second for a reply from the server;
-   * if no reply is received, the client should assume that the packet was lost and print a message accordingly.
+   * Constructs a new UDP Client.
    */
+  public UDPClient() {
+    this.socket = null;
+  }
 
-    private SocketData socketData;
-    private DatagramSocket socket;
+  /**
+   * Returns the DatagramSocket for this client.
+   *
+   * @return socket for this client, as a DatagramSocket.
+   */
+  public DatagramSocket getSocket() {
+    return this.socket;
+  }
 
-    private byte[] buffer;
-
-    public UDPClient(SocketData socketData, int timeoutLength) throws SocketException {
-      this.socketData = socketData;
+  /**
+   * Given a timeout length (in seconds), sets the socket for this client as an open
+   * DatagramSocket.
+   *
+   * @param timeoutLength Timeout length for the client to wait for packets from server (in
+   * seconds).
+   */
+  public void openSocket(int timeoutLength) {
+    try {
       this.socket = new DatagramSocket();
       this.socket.setSoTimeout(timeoutLength);
-
-    }
-
-    public DatagramPacket send(String outputMsg) {
-      buffer = outputMsg.getBytes();
-      DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.socketData.getAddress(), 12000);
-      try {
-        this.socket.send(packet);
-      }  catch (IOException e) {
-        System.out.println("I/O error encountered.");
-      }
-      return packet;
-    }
-
-    public DatagramPacket receive(byte[] buffer) {
-      DatagramPacket packetRcvd = new DatagramPacket(buffer, buffer.length);
-      try {
-        this.socket.receive(packetRcvd);
-        return packetRcvd;
-      } catch (SocketTimeoutException e) {
-        System.out.println("Nothing from server; assume packet lost.");
-      } catch (IOException e) {
-        System.out.println("I/O error encountered when receiving packet.");
-      }
-      return null;
-    }
-
-    public void close() {
-      this.socket.close();
+    } catch (SocketException e) {
+      System.out.println("Error creating datagram socket with 1s timeout.");
     }
   }
+
+  /**
+   * Given an output message and server socket information, creates a DatagramPacket and sends it
+   * from this client to the passed socket info.
+   *
+   * @param outputMsg - The message to send to the server, as a String.
+   * @param socket - The server socket to send the message to, as a SocketData object.
+   */
+  public DatagramPacket send(String outputMsg, SocketData socket) {
+    byte[] buffer = outputMsg.getBytes();
+    DatagramPacket packet = new DatagramPacket(buffer, buffer.length, socket.getAddress(),
+        socket.getPort());
+    try {
+      this.socket.send(packet);
+    } catch (IOException e) {
+      System.out.println("I/O error encountered. Packet not sent.");
+    }
+    return packet;
+  }
+
+  /**
+   * Given a buffer size, receives DatagramPackets at this socket and returns the result.
+   *
+   * @param buffer - The buffer to use for this DatagramPacket, as a byte[].
+   * @return The Datagram packet received by this client (may be null if timeout length reached and
+   * no packet received).
+   */
+  public DatagramPacket receive(byte[] buffer) {
+    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+    try {
+      this.socket.receive(packet);
+      return packet;
+    } catch (SocketTimeoutException e) {
+      System.out.println("Packet not received.");
+    } catch (IOException e) {
+      System.out.println("I/O error encountered when receiving packet.");
+    }
+    return null;
+  }
+
+  /**
+   * Closes the socket for this client.
+   */
+  public void closeSocket() {
+    this.socket.close();
+  }
+}
 
