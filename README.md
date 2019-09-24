@@ -16,10 +16,14 @@ This client ping program sends a simple ping message to a server, receiving a co
    - You should now see three new .class files in the src directory
    
 3) Run client
-   - In the same command line window as step 2):
-   - Type **java ClientPingApp**  
-   - The client program should now run and terminate when complete, printing the results to the console.  
+   - In the same command line window as step 2:
+   - Type **java ClientPingApp** and hit **return**
+   - The client program should now run and terminate once complete, printing the results to the console.  
      (Example output included in screenshot below.)
 
 4) Close server
-   - When complete, return to the server command line window and exit by typing **ctrl+c** and hitting **return**
+   - When complete, return to the server command line window and exit by typing **ctrl+c** and hitting **return**  
+     
+        
+             
+   <img alt="ping terminal window screenshot" src="https://github.com/stefamy/udp-pinger/blob/master/sample-output.png" width="400" style="display: block; margin-top: 10px;">
