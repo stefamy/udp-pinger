@@ -3,7 +3,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import socketdata.SocketData;
 
 /**
  * UDP UDPClient implementation with associate methods to send and receive data.
@@ -40,7 +39,7 @@ public class UDPClient {
       this.socket = new DatagramSocket();
       this.socket.setSoTimeout(timeoutLength);
     } catch (SocketException e) {
-      System.out.println("Error creating datagram socket with 1s timeout.");
+      System.out.println("Error creating datagram socket.");
     }
   }
 
@@ -50,23 +49,25 @@ public class UDPClient {
    *
    * @param outputMsg - The message to send to the server, as a String.
    * @param socket - The server socket to send the message to, as a SocketData object.
+   * @return Boolean, true if packet was sent, false if exception occurs.
    */
-  public DatagramPacket send(String outputMsg, SocketData socket) {
+  public Boolean send(String outputMsg, SocketData socket) {
     byte[] buffer = outputMsg.getBytes();
     DatagramPacket packet = new DatagramPacket(buffer, buffer.length, socket.getAddress(),
         socket.getPort());
     try {
       this.socket.send(packet);
+      return true;
     } catch (IOException e) {
       System.out.println("I/O error encountered. Packet not sent.");
+      return false;
     }
-    return packet;
   }
 
   /**
-   * Given a buffer size, receives DatagramPackets at this socket and returns the result.
+   * Receives DatagramPacket at this socket and returns the result.
    *
-   * @param buffer - The buffer to use for this DatagramPacket, as a byte[].
+   * @param buffer - The buffer to use for the received DatagramPacket, as a byte[].
    * @return The Datagram packet received by this client (may be null if timeout length reached and
    * no packet received).
    */

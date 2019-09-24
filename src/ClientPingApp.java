@@ -1,7 +1,6 @@
 import static java.lang.System.exit;
 
 import java.net.DatagramPacket;
-import socketdata.SocketData;
 
 /**
  * UDP Client Program.
